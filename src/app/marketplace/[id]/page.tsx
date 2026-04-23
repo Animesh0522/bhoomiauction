@@ -73,9 +73,6 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
     return unit.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
   }
 
-  const perUnitPrice = property.reserve_price && property.area_sqft 
-    ? property.reserve_price / property.area_sqft 
-    : null;
 
   return (
     <div className="min-h-screen bg-zinc-950 pb-20">

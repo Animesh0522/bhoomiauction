@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Building2, Copy, CheckCircle2, Loader2, AlertTriangle, ShieldCheck, ArrowRight } from "lucide-react"
+import { Building2, Copy, CheckCircle2, Loader2, AlertTriangle, ShieldCheck } from "lucide-react"
 
 interface AccountDetails {
   virtual_account_id: string
@@ -12,7 +12,7 @@ interface AccountDetails {
   emd_status?: string
 }
 
-export default function EmdRegistrationClient({ auctionId, propertyTitle, emdAmount }: {
+export default function EmdRegistrationClient({ auctionId, propertyTitle: _propertyTitle, emdAmount }: {
   auctionId: string
   propertyTitle: string
   emdAmount: number
@@ -21,7 +21,7 @@ export default function EmdRegistrationClient({ auctionId, propertyTitle, emdAmo
   const [error, setError] = useState<string | null>(null)
   const [accountDetails, setAccountDetails] = useState<AccountDetails | null>(null)
   const [copied, setCopied] = useState<"account" | "ifsc" | null>(null)
-  const [pollingStatus, setPollingStatus] = useState<string | null>(null)
+  const [_pollingStatus, setPollingStatus] = useState<string | null>(null)
 
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(amount)
@@ -45,14 +45,14 @@ export default function EmdRegistrationClient({ auctionId, propertyTitle, emdAmo
           startPolling(data.virtual_account_id)
         }
       }
-    } catch (e: any) {
+    } catch (_e: unknown) {
       setError("Network error. Please check your connection.")
     } finally {
       setLoading(false)
     }
   }
 
-  const startPolling = (vaId: string) => {
+  const startPolling = (_vaId: string) => {
     const interval = setInterval(async () => {
       try {
         const res = await fetch(`/api/emd/status?auction_id=${auctionId}`)

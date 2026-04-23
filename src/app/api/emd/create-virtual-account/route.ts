@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     const va = await razorpay.virtualAccounts.create(vaPayload as any)
 
     // 6. Extract bank account details from the virtual account
-    const bankReceiver = va.receivers?.find((r: any) => r.entity === "bank_account")
+    const bankReceiver = (va.receivers as Array<{ entity: string; account_number: string; ifsc: string }>)?.find((r) => r.entity === "bank_account")
     const accountNumber = bankReceiver?.account_number || va.id
     const ifsc = bankReceiver?.ifsc || "RATN0VAAPIS"
 
@@ -112,10 +112,11 @@ export async function POST(req: NextRequest) {
       emd_amount: property.emd_amount,
     })
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Virtual Account creation error:", err)
+    const error = err as { error?: { description?: string }; message?: string }
     return NextResponse.json(
-      { error: err?.error?.description || err?.message || "Failed to create virtual account." },
+      { error: error?.error?.description || error?.message || "Failed to create virtual account." },
       { status: 500 }
     )
   }

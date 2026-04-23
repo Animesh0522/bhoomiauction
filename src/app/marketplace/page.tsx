@@ -1,11 +1,11 @@
 import { createClient } from "@/utils/supabase/server"
 import { Card, CardContent } from "@/components/ui/card"
-import { MapPin, Expand, BadgeCheck, Flame, Search, SlidersHorizontal } from "lucide-react"
+import { MapPin, Expand, BadgeCheck, Flame, Search } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import MarketplaceFilters from "./MarketplaceFilters"
 
-export default async function MarketplacePage({ searchParams }: { searchParams: any }) {
+export default async function MarketplacePage({ searchParams }: { searchParams: Record<string, string | undefined> }) {
   const supabase = createClient()
 
   const search = searchParams?.search || ''
@@ -85,8 +85,6 @@ export default async function MarketplacePage({ searchParams }: { searchParams: 
         {properties && properties.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {properties.map((property) => {
-              const highestBid = highestBidMap[property.id]
-              const displayPrice = highestBid || property.reserve_price
               return (
                 <Link href={`/marketplace/${property.id}`} key={property.id} className="block group">
                   <Card className="bg-zinc-900 border-zinc-800 overflow-hidden hover:border-emerald-500/50 transition-all duration-300 shadow-lg hover:shadow-emerald-900/20 h-full flex flex-col">

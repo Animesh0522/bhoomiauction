@@ -42,7 +42,7 @@ export default function NewListingPage() {
     if (savedData) {
       try {
         setFormData(JSON.parse(savedData))
-      } catch (e) {
+      } catch (_e) {
         console.error("Failed to parse local storage data")
       }
     }
@@ -130,9 +130,9 @@ export default function NewListingPage() {
       router.push("/dashboard")
       router.refresh()
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
-      setError(err.message || "An unexpected error occurred.")
+      setError(err instanceof Error ? err.message : "An unexpected error occurred.")
       setLoading(false)
     }
   }

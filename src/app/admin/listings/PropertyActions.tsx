@@ -1,7 +1,6 @@
 "use client"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { CurrencyInput } from "@/components/ui/currency-input"
 import { CheckCircle, XCircle, Loader2, AlertCircle } from "lucide-react"
 import { approveProperty, rejectProperty } from "../actions"
@@ -48,9 +47,9 @@ export function PropertyActions({ propertyId, reservePrice }: { propertyId: stri
         const res = await rejectProperty(propertyId)
         if (res?.error) throw new Error(res.error)
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("Action error:", e)
-      alert("Error: " + (e.message || JSON.stringify(e)))
+      alert("Error: " + (e instanceof Error ? e.message : JSON.stringify(e)))
     } finally {
       setLoading(null)
     }

@@ -108,7 +108,7 @@ export default async function PropertiesPage() {
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">No Properties Listed Yet</h3>
           <p className="text-zinc-400 max-w-md mb-6">
-            You haven't added any properties to your portfolio. Start by creating a new listing to put your property up for auction.
+            You haven&apos;t added any properties to your portfolio. Start by creating a new listing to put your property up for auction.
           </p>
           <Link href="/seller/listings/new">
             <Button className="bg-white text-zinc-950 hover:bg-zinc-200">

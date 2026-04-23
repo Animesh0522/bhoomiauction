@@ -36,7 +36,7 @@ export default async function DashboardPage() {
   
   let totalEmd = 0
   if (participantsData) {
-    totalEmd = participantsData.reduce((acc, curr: any) => {
+    totalEmd = participantsData.reduce((acc, curr: { properties?: { emd_amount?: number } }) => {
       const amount = curr.properties?.emd_amount || 0
       return acc + Number(amount)
     }, 0)
@@ -157,7 +157,7 @@ export default async function DashboardPage() {
               </div>
             ) : (
               <div className="text-sm text-zinc-500 py-8 text-center border border-dashed border-zinc-800 rounded-lg">
-                You haven't placed any bids yet. Head to the Marketplace!
+                You haven&apos;t placed any bids yet. Head to the Marketplace!
               </div>
             )}
           </CardContent>
@@ -211,7 +211,7 @@ export default async function DashboardPage() {
               </div>
             ) : (
               <div className="text-sm text-zinc-500 py-6 text-center border border-dashed border-emerald-900/30 rounded-lg">
-                You haven't won any auctions yet. Keep bidding!
+                You haven&apos;t won any auctions yet. Keep bidding!
               </div>
             )}
           </CardContent>

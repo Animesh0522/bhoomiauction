@@ -24,8 +24,7 @@ export default async function AuctionRegisterPage({ params }: { params: { id: st
     redirect(`/marketplace/${params.id}`)
   }
 
-  // Check existing registration
-  const { data: existingReg } = await supabase
+  const { data: _existingReg } = await supabase
     .from("auction_registrations")
     .select("emd_status")
     .eq("auction_id", params.id)

@@ -11,10 +11,10 @@ export default function BiddingConsole({
   property, 
   highestBid, 
   hasPaidEmd,
-  isLoggedIn,
+  isLoggedIn: _isLoggedIn,
   userId
 }: { 
-  property: any, 
+  property: Record<string, unknown>,
   highestBid: number | null,
   hasPaidEmd: boolean,
   isLoggedIn: boolean,

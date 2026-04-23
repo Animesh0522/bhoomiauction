@@ -109,12 +109,12 @@ export default async function AdminListingsPage() {
                     <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Seller Details</p>
                     <div className="flex items-center text-sm text-zinc-300">
                       <User className="h-4 w-4 mr-2 text-zinc-500" />
-                      {/* @ts-ignore - nested join type bypass */}
+                      {/* @ts-expect-error - nested join type bypass */}
                       {property.users?.full_name || 'Anonymous User'}
                     </div>
                     <div className="flex items-center text-sm text-zinc-300">
                       <Phone className="h-4 w-4 mr-2 text-zinc-500" />
-                      {/* @ts-ignore - nested join type bypass */}
+                      {/* @ts-expect-error - nested join type bypass */}
                       {property.users?.mobile || 'No Mobile Provided'}
                     </div>
                   </div>
