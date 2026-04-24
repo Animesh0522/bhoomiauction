@@ -15,6 +15,9 @@ export default async function HomePage() {
     .order("created_at", { ascending: false })
     .limit(3)
 
+  const { data: { user } } = await supabase.auth.getUser()
+  const isLoggedIn = !!user
+
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(amount)
 
@@ -33,26 +36,37 @@ export default async function HomePage() {
             </span>
           </Link>
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-            <Link href="/marketplace" className="hover:text-white transition-colors">Marketplace</Link>
-            <Link href="/seller/listings" className="hover:text-white transition-colors">Sell Property</Link>
-            <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
+            {isLoggedIn && (
+              <>
+                <Link href="/marketplace" className="hover:text-white transition-colors">Marketplace</Link>
+                <Link href="/seller/listings" className="hover:text-white transition-colors">Sell Property</Link>
+                <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
+              </>
+            )}
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">Sign In</Button>
-            </Link>
-            <Link href="/marketplace">
-              <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white gap-1.5">
-                Browse Auctions <ArrowRight className="w-3.5 h-3.5" />
-              </Button>
-            </Link>
+            {!isLoggedIn ? (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">Sign In</Button>
+                </Link>
+                <Link href="/login">
+                  <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white gap-1.5">
+                    Sign Up <ArrowRight className="w-3.5 h-3.5" />
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">Dashboard</Button>
+              </Link>
+            )}
           </div>
         </div>
       </header>
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden py-24 md:py-36 px-4">
-        {/* Background gradient blobs */}
         <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-emerald-600/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-cyan-600/10 blur-3xl pointer-events-none" />
 
@@ -78,19 +92,18 @@ export default async function HomePage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
-            <Link href="/marketplace">
+            <Link href={isLoggedIn ? "/marketplace" : "/login"}>
               <Button size="lg" className="w-full sm:w-auto h-14 px-8 text-base font-semibold bg-emerald-600 hover:bg-emerald-500 text-white gap-2 rounded-xl">
                 Explore Live Auctions <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href="/seller/listings/new">
+            <Link href={isLoggedIn ? "/seller/listings/new" : "/login"}>
               <Button size="lg" variant="outline" className="w-full sm:w-auto h-14 px-8 text-base font-semibold border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white rounded-xl">
                 List Your Property
               </Button>
             </Link>
           </div>
 
-          {/* Trust indicators */}
           <div className="flex flex-wrap justify-center gap-6 pt-4 text-sm text-zinc-500">
             {["100% Verified Listings", "Secure EMD via Bank Transfer", "Real-Time Bidding", "Instant Winner Declaration"].map(item => (
               <span key={item} className="flex items-center gap-1.5">
@@ -127,14 +140,14 @@ export default async function HomePage() {
                 <h2 className="text-3xl font-bold text-white">Live Auctions</h2>
                 <p className="text-zinc-400 mt-1">Currently active — bid before time runs out</p>
               </div>
-              <Link href="/marketplace" className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
+              <Link href={isLoggedIn ? "/marketplace" : "/login"} className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors">
                 View All <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {featuredProperties.map(property => (
-                <Link href={`/marketplace/${property.id}`} key={property.id} className="group block">
+                <Link href={isLoggedIn ? `/marketplace/${property.id}` : "/login"} key={property.id} className="group block">
                   <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-900/20">
                     <div className="relative h-52 bg-zinc-800">
                       {property.image_urls?.[0] ? (
@@ -168,7 +181,7 @@ export default async function HomePage() {
             </div>
 
             <div className="text-center sm:hidden">
-              <Link href="/marketplace">
+              <Link href={isLoggedIn ? "/marketplace" : "/login"}>
                 <Button variant="outline" className="border-zinc-700 text-zinc-300 hover:bg-zinc-800">View All Auctions</Button>
               </Link>
             </div>
@@ -213,12 +226,12 @@ export default async function HomePage() {
           </h2>
           <p className="text-zinc-400 text-lg">Join thousands of buyers and sellers on India&apos;s fastest-growing real estate auction platform.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/marketplace">
+            <Link href={isLoggedIn ? "/marketplace" : "/login"}>
               <Button size="lg" className="w-full sm:w-auto h-13 px-8 text-base font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl gap-2">
                 Start Bidding Now <ArrowRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Link href="/seller/listings/new">
+            <Link href={isLoggedIn ? "/seller/listings/new" : "/login"}>
               <Button size="lg" variant="outline" className="w-full sm:w-auto h-13 px-8 text-base font-semibold border-zinc-700 text-zinc-300 hover:bg-zinc-800 rounded-xl">
                 List a Property
               </Button>
@@ -240,9 +253,9 @@ export default async function HomePage() {
             © {new Date().getFullYear()} BhoomiAuction.com · Real Estate Auctions, Made Transparent.
           </p>
           <div className="flex gap-6 text-sm text-zinc-500">
-            <Link href="/marketplace" className="hover:text-white transition-colors">Marketplace</Link>
-            <Link href="/seller/listings/new" className="hover:text-white transition-colors">Sell</Link>
-            <Link href="/dashboard" className="hover:text-white transition-colors">Dashboard</Link>
+            <Link href={isLoggedIn ? "/marketplace" : "/login"} className="hover:text-white transition-colors">Marketplace</Link>
+            <Link href={isLoggedIn ? "/seller/listings/new" : "/login"} className="hover:text-white transition-colors">Sell</Link>
+            <Link href={isLoggedIn ? "/dashboard" : "/login"} className="hover:text-white transition-colors">Dashboard</Link>
           </div>
         </div>
       </footer>
