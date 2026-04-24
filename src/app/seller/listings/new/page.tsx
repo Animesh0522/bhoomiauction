@@ -27,9 +27,9 @@ export default function NewListingPage() {
     breadth: "",
     facing: "",
     address: "",
-    city: "",
-    state: "",
-    pincode: ""
+    city: "Delhi",
+    state: "Delhi",
+    pincode: "110001"
   })
 
   const [files, setFiles] = useState<File[]>([])
