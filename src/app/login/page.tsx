@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Loader2, Mail, ArrowRight, MailCheck } from "lucide-react"
@@ -10,12 +11,21 @@ type Mode = "signin" | "signup"
 type Step = "EMAIL" | "SENT"
 
 export default function LoginPage() {
+  const searchParams = useSearchParams()
+  const initialMode = (searchParams.get("tab") === "signup" ? "signup" : "signin") as Mode
+
   const [email, setEmail] = useState("")
   const [fullName, setFullName] = useState("")
   const [step, setStep] = useState<Step>("EMAIL")
-  const [mode, setMode] = useState<Mode>("signin")
+  const [mode, setMode] = useState<Mode>(initialMode)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Sync if user navigates between ?tab=signin and ?tab=signup
+  useEffect(() => {
+    const tab = searchParams.get("tab")
+    if (tab === "signup" || tab === "signin") setMode(tab)
+  }, [searchParams])
 
   const supabase = createClient()
 

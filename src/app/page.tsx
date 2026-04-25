@@ -47,10 +47,10 @@ export default async function HomePage() {
           <div className="flex items-center gap-3">
             {!isLoggedIn ? (
               <>
-                <Link href="/login">
+                <Link href="/login?tab=signin">
                   <Button variant="ghost" size="sm" className="text-zinc-300 hover:text-white">Sign In</Button>
                 </Link>
-                <Link href="/login">
+                <Link href="/login?tab=signup">
                   <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white gap-1.5">
                     Sign Up <ArrowRight className="w-3.5 h-3.5" />
                   </Button>
