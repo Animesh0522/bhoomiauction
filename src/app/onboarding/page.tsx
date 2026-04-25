@@ -112,8 +112,8 @@ export default function OnboardingPage() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setError("Session expired. Please log in again."); setLoading(false); return }
 
-    // Save role to user metadata
-    await supabase.auth.updateUser({ data: { role: form.role, full_name: form.full_name } })
+    // Save role to user metadata and mark kyc_status as submitted
+    await supabase.auth.updateUser({ data: { role: form.role, full_name: form.full_name, kyc_status: "submitted" } })
 
     // Save profile to DB
     const { error: dbErr } = await supabase.from("user_profiles").upsert({

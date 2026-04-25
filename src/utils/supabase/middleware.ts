@@ -46,6 +46,21 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  // Force users with pending KYC to complete onboarding
+  if (user) {
+    const isPendingKyc = user.user_metadata?.kyc_status === 'pending'
+    const isOnboarding = request.nextUrl.pathname.startsWith('/onboarding')
+    const isApi = request.nextUrl.pathname.startsWith('/api')
+    const isAuth = request.nextUrl.pathname.startsWith('/auth')
+
+    // Redirect to onboarding if they haven't completed it (unless they are already there or logging out)
+    if (isPendingKyc && !isOnboarding && !isApi && !isAuth) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/onboarding'
+      return NextResponse.redirect(url)
+    }
+  }
+
   // Prevent logged in users from seeing login page
   if (user && request.nextUrl.pathname === '/login') {
     const url = request.nextUrl.clone()

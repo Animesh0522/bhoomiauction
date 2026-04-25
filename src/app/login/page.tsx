@@ -68,7 +68,7 @@ function LoginForm() {
         email,
         options: {
           shouldCreateUser: true,
-          data: { full_name: fullName },
+          data: { full_name: fullName, kyc_status: "pending" },
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       })
