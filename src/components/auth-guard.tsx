@@ -10,23 +10,55 @@ export function AuthGuard() {
   const supabase = createClient()
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      // When a session is established (either via cookie or by parsing the URL hash like #access_token=...)
-      if (session?.user) {
-        const isPendingKyc = session.user.user_metadata?.kyc_status === "pending"
-        
-        // If they have pending KYC, force them to onboarding
-        if (isPendingKyc && pathname !== "/onboarding") {
+    let isMounted = true
+
+    const checkProfileAndRedirect = async (session: any) => {
+      if (!session?.user || !isMounted) return
+
+      try {
+        // Fallback: Check metadata first for instant routing
+        const isPendingKycMeta = session.user.user_metadata?.kyc_status === "pending"
+        if (isPendingKycMeta && pathname !== "/onboarding") {
           router.push("/onboarding")
+          return
         }
-        // If they are on the home page, have no pending KYC, and have a magic link hash, send to dashboard
-        else if (!isPendingKyc && pathname === "/" && typeof window !== "undefined" && window.location.hash.includes("access_token")) {
+
+        // Always verify with DB to be completely sure (catches old users and edge cases)
+        const { data: profile, error } = await supabase
+          .from("user_profiles")
+          .select("kyc_status")
+          .eq("user_id", session.user.id)
+          .maybeSingle()
+
+        if (!isMounted) return
+
+        const isMissingOrPending = !profile || profile.kyc_status === "pending"
+        
+        if (isMissingOrPending && pathname !== "/onboarding") {
+          router.push("/onboarding")
+        } else if (!isMissingOrPending && pathname === "/" && typeof window !== "undefined" && window.location.hash.includes("access_token")) {
+          // They just logged in via magic link hash on home page, and have completed KYC
           router.push("/dashboard")
         }
+      } catch (err) {
+        console.error("AuthGuard error:", err)
       }
+    }
+
+    // 1. Check session immediately on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) checkProfileAndRedirect(session)
     })
 
-    return () => subscription.unsubscribe()
+    // 2. Listen to auth state changes (catches the magic link hash parsing)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) checkProfileAndRedirect(session)
+    })
+
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
   }, [router, pathname, supabase.auth])
 
   return null
