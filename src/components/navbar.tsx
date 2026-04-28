@@ -63,7 +63,11 @@ export function Navbar({ phoneNumber }: { phoneNumber?: string }) {
               </Link>
               <Link href="/admin/listings" className="transition-colors hover:text-white flex items-center gap-2">
                 <ShieldCheck className="h-4 w-4" />
-                Admin
+                Admin Listings
+              </Link>
+              <Link href="/admin/kyc" className="transition-colors hover:text-white flex items-center gap-2 text-amber-400">
+                <ShieldCheck className="h-4 w-4" />
+                Admin KYC
               </Link>
             </div>
             <div className="flex items-center space-x-4">
